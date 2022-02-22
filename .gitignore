@@ -2,7 +2,7 @@
 .env
 
 # vscode
-vscode/*
+.vscode/*
 
 # venv
 venv/*
