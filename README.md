@@ -38,8 +38,8 @@ Write unit tests.
 
 ### Resources
 
-[Toptal FastAPI Tutorial](https://www.toptal.com/python/build-high-performing-apps-with-the-python-fastapi-framework)
-[FastAPI Tutorial](https://fastapi.tiangolo.com/tutorial/)
-[SQL Alchemy Tutorial](https://docs.sqlalchemy.org/en/14/tutorial/)
-[Timezone on Wikipedia](https://en.wikipedia.org/wiki/Time_zone)
-[List of TZ Database Timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+* [Toptal FastAPI Tutorial](https://www.toptal.com/python/build-high-performing-apps-with-the-python-fastapi-framework)
+* [FastAPI Tutorial](https://fastapi.tiangolo.com/tutorial/)
+* [SQL Alchemy Tutorial](https://docs.sqlalchemy.org/en/14/tutorial/)
+* [Timezone on Wikipedia](https://en.wikipedia.org/wiki/Time_zone)
+* [List of TZ Database Timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
