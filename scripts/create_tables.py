@@ -1,8 +1,11 @@
 
 from sqlalchemy import ForeignKey, Numeric, Table, Column, Integer, String, Boolean, MetaData, create_engine
 import urllib.parse
+from core.schemas.schema import UserCreate
 
 import settings
+from core.service import UserService
+from core.models.database import postgres_repo
 
 env_vars = settings.env_vars
 url_str = f"postgresql://{urllib.parse.quote_plus(env_vars.db_login)}:{urllib.parse.quote_plus(env_vars.db_password)}"\
@@ -29,3 +32,7 @@ timezones = Table(
 )
 
 meta.create_all(engine)
+
+user_service = UserService(repo=postgres_repo)
+user_service.create_user(UserCreate(
+    email=env_vars.admin_email, password=env_vars.admin_pwd, is_admin=True))

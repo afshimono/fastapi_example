@@ -29,12 +29,12 @@ Write unit tests.
 ### TODO List
 
 - [x] User auth and JWT use
-- [ ] Timezone endpoints
+- [x] Timezone endpoints
 - [x] Timezone DB
 - [ ] Unittests
 - [ ] Documentation
 - [ ] Dockerization
-- [ ] Init Scripts
+- [x] Init Scripts
 
 ### Resources
 
