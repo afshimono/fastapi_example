@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 import uvicorn
 
-from settings import EnvVariables
 from v1.endpoints import users, timezones
 
 app = FastAPI()
+
 
 app.include_router(users.router)
 app.include_router(timezones.router)
