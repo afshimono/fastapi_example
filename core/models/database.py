@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from abc import ABC, abstractmethod
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Numeric, create_engine
 from sqlalchemy.orm import relationship, sessionmaker, joinedload
@@ -36,11 +36,11 @@ class Timezone(Base):
 class Repo(ABC):
 
     @abstractmethod
-    def get_user_by_email(self, email: str) -> User:
+    def get_user_by_email(self, email: str) -> Optional[User]:
         pass
 
     @abstractmethod
-    def get_user_by_id(self, user_id: str) -> User:
+    def get_user_by_id(self, user_id: int) -> Optional[User]:
         pass
 
     @abstractmethod
@@ -75,6 +75,10 @@ class Repo(ABC):
     def list_users(self) -> List[User]:
         pass
 
+    @abstractmethod
+    def get_timezone_by_id(self, tz_id: int) -> Timezone:
+        pass
+
 
 class PostgresRepo(Repo):
     def __init__(self) -> None:
@@ -88,11 +92,11 @@ class PostgresRepo(Repo):
         with self.session() as db:
             return db.query(User).all()
 
-    def get_user_by_email(self, email: str) -> User:
+    def get_user_by_email(self, email: str) -> Optional[User]:
         with self.session() as db:
             return db.query(User).filter(User.email == email).first()
 
-    def get_user_by_id(self, user_id: str) -> User:
+    def get_user_by_id(self, user_id: int) -> Optional[User]:
         with self.session() as db:
             return db.query(User).filter(User.id == user_id).first()
 
@@ -128,6 +132,10 @@ class PostgresRepo(Repo):
     def list_timezone_by_user_id(self, user_id: int) -> Timezone:
         with self.session() as db:
             return db.query(Timezone).filter(Timezone.owner_id == user_id).all()
+
+    def get_timezone_by_id(self, tz_id: int) -> Timezone:
+        with self.session() as db:
+            return db.query(Timezone).filter(Timezone.id == tz_id).first()
 
     def update_timezone(self, tz: TimezoneUpdate) -> None:
         with self.session() as db:

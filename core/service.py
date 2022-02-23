@@ -68,6 +68,9 @@ class TimezoneService:
     def __init__(self, repo: Repo) -> None:
         self.repo = repo
 
+    def get_tz_by_id(self, tz_id: int) -> Timezone:
+        return self.repo.get_timezone_by_id(tz_id=tz_id)
+
     def list_tz_by_user_id(self, user_id: int) -> List[TimezoneUpdate]:
         tz_list = self.repo.list_timezone_by_user_id(user_id)
         return [TimezoneUpdate(name=tz.name, gmt_hours_diff=tz.gmt_hours_diff,
