@@ -11,7 +11,7 @@ from auth import jwt_token_handler, JWTBearer, check_logged_is_admin, check_logg
 user_service = UserService(repo=postgres_repo)
 
 
-def get_user_service():
+def get_user_service() -> UserService:
     return user_service
 
 
@@ -25,7 +25,7 @@ router = APIRouter(prefix="/users",
 
 
 @router.post("/login")
-async def login(cred: UserSignUp, user_service=Depends(get_user_service)):
+async def login(cred: UserSignUp, user_service: UserService = Depends(get_user_service)):
     try:
         if user := user_service.verify_pwd(cred.password, cred.email):
             payload = {
@@ -43,24 +43,24 @@ async def login(cred: UserSignUp, user_service=Depends(get_user_service)):
 
 
 @router.post("/signup")
-async def signup(user: UserSignUp, user_service=Depends(get_user_service)):
+async def signup(user: UserSignUp, user_service: UserService = Depends(get_user_service)):
     return user_service.create_user(UserCreate(is_admin=False, **user.dict()))
 
 
 @router.post("/")
-async def create_user(user: UserCreate, logged_user: Dict = Depends(JWTBearer()), user_service=Depends(get_user_service)):
+async def create_user(user: UserCreate, logged_user: Dict = Depends(JWTBearer()), user_service: UserService = Depends(get_user_service)):
     check_logged_is_admin(logged_user)
     return user_service.create_user(user)
 
 
 @router.get("/")
-async def list_users(logged_user: Dict = Depends(JWTBearer()), user_service=Depends(get_user_service)):
+async def list_users(logged_user: Dict = Depends(JWTBearer()), user_service: UserService = Depends(get_user_service)):
     check_logged_is_admin(logged_user)
     return user_service.list_users()
 
 
 @router.put("/")
-async def update_user(user: UserUpdate, logged_user: Dict = Depends(JWTBearer()), user_service=Depends(get_user_service)):
+async def update_user(user: UserUpdate, logged_user: Dict = Depends(JWTBearer()), user_service: UserService = Depends(get_user_service)):
     check_logged_is_admin(logged_user)
     try:
         user_service.update_user(user)
@@ -71,7 +71,7 @@ async def update_user(user: UserUpdate, logged_user: Dict = Depends(JWTBearer())
 
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: int, logged_user: Dict = Depends(JWTBearer()), user_service=Depends(get_user_service)):
+async def delete_user(user_id: int, logged_user: Dict = Depends(JWTBearer()), user_service: UserService = Depends(get_user_service)):
     check_logged_own_or_is_admin(logged_user, user_id)
     try:
         user_service.delete_user(user_id=user_id)
