@@ -15,7 +15,7 @@ def get_user_service() -> UserService:
     return user_service
 
 
-router = APIRouter(prefix="/users",
+router = APIRouter(prefix="/v1/users",
                    tags=["users"],
                    responses={
                        404: {

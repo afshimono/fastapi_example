@@ -9,7 +9,7 @@ from core.models.database import postgres_repo
 from auth import check_logged_is_admin, JWTBearer, check_logged_own_or_is_admin
 
 
-router = APIRouter(prefix="/timezones",
+router = APIRouter(prefix="/v1/timezones",
                    tags=["timezones"],
                    responses={
                        404: {
@@ -36,7 +36,7 @@ async def list_user_timezones(user_id: int, logged_user: Dict = Depends(JWTBeare
 
 
 @router.post("/")
-async def create_my_timezone(tz: TimezoneCreate, logged_user: Dict = Depends(JWTBearer()), timezone_service: TimezoneService = Depends(get_timezone_service)):
+async def create_timezone(tz: TimezoneCreate, logged_user: Dict = Depends(JWTBearer()), timezone_service: TimezoneService = Depends(get_timezone_service)):
     owner_id = logged_user["user_id"] if tz.owner_id is None else tz.owner_id
     check_logged_own_or_is_admin(logged_user=logged_user, user_id=owner_id)
     tz_kwargs = tz.dict()
@@ -46,7 +46,7 @@ async def create_my_timezone(tz: TimezoneCreate, logged_user: Dict = Depends(JWT
 
 
 @router.put("/")
-async def update_my_timezone(tz: TimezoneUpdate, logged_user: Dict = Depends(JWTBearer()), timezone_service: TimezoneService = Depends(get_timezone_service)):
+async def update_timezone(tz: TimezoneUpdate, logged_user: Dict = Depends(JWTBearer()), timezone_service: TimezoneService = Depends(get_timezone_service)):
     owner_id = logged_user["user_id"] if tz.owner_id is None else tz.owner_id
     check_logged_own_or_is_admin(logged_user=logged_user, user_id=owner_id)
     try:

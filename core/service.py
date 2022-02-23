@@ -1,5 +1,4 @@
 
-import email
 from typing import List
 
 from bcrypt import gensalt
@@ -56,12 +55,6 @@ class UserService:
             self.repo.delete_user(user_id)
         except NotFound as e:
             raise DeleteError(e) from e
-
-    def _create_user_entity(self, pwd: str, pepper: str, email: str, is_admin: bool) -> User:
-        salt = gensalt().decode('utf-8')
-        pwd = hash_pwd(pwd, salt=salt, pepper=pepper)
-        return User(salt=salt, email=email,
-                    password=pwd, is_admin=is_admin)
 
 
 class TimezoneService:

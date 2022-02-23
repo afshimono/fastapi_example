@@ -48,7 +48,7 @@ class Repo(ABC):
         pass
 
     @abstractmethod
-    def update_user(self, user: User, pwd: str, salt: str) -> None:
+    def update_user(self, user: UserUpdate, pwd: str, salt: str) -> None:
         pass
 
     @abstractmethod
@@ -60,7 +60,7 @@ class Repo(ABC):
         pass
 
     @abstractmethod
-    def update_timezone(self, tz: Timezone) -> Timezone:
+    def update_timezone(self, tz: TimezoneUpdate) -> None:
         pass
 
     @abstractmethod
