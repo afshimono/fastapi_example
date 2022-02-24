@@ -19,11 +19,17 @@ The API must be able to return data in the JSON format.
 In any case, you should be able to explain how a REST API works and demonstrate that by creating functional tests that use the REST Layer directly. Please be prepared to use REST clients like Postman, cURL, etc. for this purpose.
 Write unit tests.
 
-### Design
-
-
 ### Running the code
 
+This project has a docker-file that can be used to run it with the Postgres dependency.
+
+Only requirement is to copy the file `sample.env` and replace the values with your own, and save it as `.env` in the root folder.
+
+If you don't want to customize anything, the default value for `DATABASE_URL` must be `postgrescompose:5432`.
+
+When docker-compose runs, it will share its values with the application.
+
+Application is available in `localhost:8000`.
 
 
 ### TODO List
@@ -31,8 +37,8 @@ Write unit tests.
 - [x] User auth and JWT use
 - [x] Timezone endpoints
 - [x] Timezone DB
-- [ ] Unittests
-- [ ] Documentation
+- [x] Unittests
+- [x] Documentation
 - [x] Dockerization
 - [x] Init Scripts
 
