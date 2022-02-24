@@ -29,6 +29,7 @@ If you don't want to customize anything, the default value for `DATABASE_URL` mu
 
 When docker-compose runs, it will share its values with the application.
 To create the 2 tables in the Database and an initial admin, run the script located in `scripts/create_tables.py`.
+There is a saved postman collection located in `tests/postman_collection`.
 
 Application is available in `localhost:8000`.
 Swagger docs can be found in `localhost:8000/docs`
