@@ -33,7 +33,7 @@ Write unit tests.
 - [x] Timezone DB
 - [ ] Unittests
 - [ ] Documentation
-- [ ] Dockerization
+- [x] Dockerization
 - [x] Init Scripts
 
 ### Resources

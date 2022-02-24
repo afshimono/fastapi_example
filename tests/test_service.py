@@ -37,14 +37,14 @@ class TestBaseService(unittest.TestCase):
         self.tz_city = "test city"
         self.tz_gmt_diff = -3
 
+    def _add_default_user(self):
+        self.repo.users[1] = self.default_user
+
 
 class TestService(TestBaseService):
 
     def setUp(self) -> None:
         super().setUp()
-
-    def _add_default_user(self):
-        self.repo.users[1] = self.default_user
 
     def test_verify_pwd(self):
         self._add_default_user()
