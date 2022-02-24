@@ -28,6 +28,7 @@ Only requirement is to copy the file `sample.env` and replace the values with yo
 If you don't want to customize anything, the default value for `DATABASE_URL` must be `postgrescompose:5432`.
 
 When docker-compose runs, it will share its values with the application.
+To create the 2 tables in the Database and an initial admin, run the script located in `scripts/create_tables.py`.
 
 Application is available in `localhost:8000`.
 Swagger docs can be found in `localhost:8000/docs`

@@ -48,6 +48,9 @@ class TestBaseService(unittest.TestCase):
     def _add_default_user(self):
         self.repo.users[1] = self.default_user
 
+    def _add_default_timezone(self):
+        self.repo.timezones[1] = self.default_timezone
+
 
 class TestService(TestBaseService):
 
@@ -129,7 +132,7 @@ class TestService(TestBaseService):
 
     def test_update_tz(self):
         self._add_default_user()
-        self.repo.timezones[1] = self.default_timezone
+        self._add_default_timezone()
         tz_update = TimezoneUpdate(
             gmt_hours_diff=10,
             name=self.tz_name,
@@ -142,6 +145,6 @@ class TestService(TestBaseService):
 
     def test_delete_tz(self):
         self._add_default_user()
-        self.repo.timezones[1] = self.default_timezone
+        self._add_default_timezone()
         self.timezone_service.delete_tz(1)
         self.assertEqual(len(self.repo.timezones), 0)

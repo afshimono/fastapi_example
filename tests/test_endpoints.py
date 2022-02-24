@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from fastapi import Request
@@ -92,12 +93,46 @@ class TestEndpoints(TestBaseEndpoint, TestBaseService):
 
     def test_tz_create(self):
         self._add_default_user()
+        payload = {
+            "gmt_hours_diff": self.tz_gmt_diff,
+            "name": self.tz_name,
+            "city_name": self.tz_city,
+            "owner_id": 1
+        }
+        response = self.client.post("/v1/timezones/", json=payload)
+        self.assertEqual(response.status_code, 200)
 
     def test_tz_update(self):
         self._add_default_user()
+        self._add_default_timezone()
+        payload = {
+            "id": 1,
+            "gmt_hours_diff": -8.5,
+            "name": self.tz_name,
+            "city_name": self.tz_city,
+            "owner_id": 1
+        }
+        response = self.client.put("/v1/timezones/", json=payload)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.repo.timezones[1].gmt_hours_diff, -8.5)
 
     def test_tz_list(self):
         self._add_default_user()
+        self._add_default_timezone()
+        response = self.client.get("/v1/timezones/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+
+    def test_tz_user_list(self):
+        self._add_default_user()
+        self._add_default_timezone()
+        response = self.client.get("/v1/timezones/users/1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
 
     def test_tz_delete(self):
         self._add_default_user()
+        self._add_default_timezone()
+        response = self.client.delete("/v1/timezones/1")
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(len(self.repo.timezones), 0)
