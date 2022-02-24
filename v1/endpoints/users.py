@@ -1,12 +1,12 @@
 from typing import Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from core.exceptions import DeleteError, NotFound
+from core.exceptions import DeleteError, NotFound, InsertError
 
 from core.schemas.schema import UserCreate, UserSignUp, UserUpdate
 from core.service import UserService
 from core.models.database import postgres_repo
-from auth import jwt_token_handler, JWTBearer, check_logged_is_admin, check_logged_own_or_is_admin
+from auth import get_logged_credentials, jwt_token_handler, check_logged_is_admin, check_logged_own_or_is_admin
 
 user_service = UserService(repo=postgres_repo)
 
@@ -44,23 +44,31 @@ async def login(cred: UserSignUp, user_service: UserService = Depends(get_user_s
 
 @router.post("/signup")
 async def signup(user: UserSignUp, user_service: UserService = Depends(get_user_service)):
-    return user_service.create_user(UserCreate(is_admin=False, **user.dict()))
+    try:
+        return user_service.create_user(UserCreate(is_admin=False, **user.dict()))
+    except InsertError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
 
 
 @router.post("/")
-async def create_user(user: UserCreate, logged_user: Dict = Depends(JWTBearer()), user_service: UserService = Depends(get_user_service)):
+async def create_user(user: UserCreate, logged_user: Dict = Depends(get_logged_credentials), user_service: UserService = Depends(get_user_service)):
     check_logged_is_admin(logged_user)
-    return user_service.create_user(user)
+    try:
+        return user_service.create_user(user)
+    except InsertError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
 
 
 @router.get("/")
-async def list_users(logged_user: Dict = Depends(JWTBearer()), user_service: UserService = Depends(get_user_service)):
+async def list_users(logged_user: Dict = Depends(get_logged_credentials), user_service: UserService = Depends(get_user_service)):
     check_logged_is_admin(logged_user)
     return user_service.list_users()
 
 
 @router.put("/")
-async def update_user(user: UserUpdate, logged_user: Dict = Depends(JWTBearer()), user_service: UserService = Depends(get_user_service)):
+async def update_user(user: UserUpdate, logged_user: Dict = Depends(get_logged_credentials), user_service: UserService = Depends(get_user_service)):
     check_logged_is_admin(logged_user)
     try:
         user_service.update_user(user)
@@ -71,7 +79,7 @@ async def update_user(user: UserUpdate, logged_user: Dict = Depends(JWTBearer())
 
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: int, logged_user: Dict = Depends(JWTBearer()), user_service: UserService = Depends(get_user_service)):
+async def delete_user(user_id: int, logged_user: Dict = Depends(get_logged_credentials), user_service: UserService = Depends(get_user_service)):
     check_logged_own_or_is_admin(logged_user, user_id)
     try:
         user_service.delete_user(user_id=user_id)

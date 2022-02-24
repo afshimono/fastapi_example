@@ -2,7 +2,7 @@ import email
 from typing import List, Optional
 
 from core.models.database import (Repo, User, Timezone)
-from core.exceptions import NotFound
+from core.exceptions import NotFound, InsertError
 from core.schemas.schema import UserUpdate
 
 
@@ -20,6 +20,8 @@ class MockRepo(Repo):
         return self.users.get(user_id)
 
     def create_user(self, user: User) -> User:
+        if self.get_user_by_email(user.email) is not None:
+            raise InsertError("User already exists.")
         id = len(self.users.keys()) + 1
         user.id = id
         self.users[id] = user
@@ -43,7 +45,8 @@ class MockRepo(Repo):
     def create_timezone(self, tz: Timezone) -> Timezone:
         id = len(self.users.keys()) + 1
         tz.id = id
-        self.timezones[id] = User
+        self.timezones[id] = tz
+        tz.owner = self.users[tz.owner_id]
         return tz
 
     def update_timezone(self, tz: Timezone) -> Timezone:
@@ -52,8 +55,11 @@ class MockRepo(Repo):
         self.timezones[tz.id] = tz
 
     def list_timezone_by_user_id(self, user_id: int) -> Timezone:
-        return [tz for tz in list(self.timezones.values())
-                if tz.dict()['owner_id'] == user_id]
+        tz_list = [tz for tz in list(self.timezones.values())
+                   if tz.owner_id == user_id]
+        for tz in tz_list:
+            tz.owner = self.users[tz.owner_id]
+        return tz_list
 
     def delete_timezone(self, tz_id: int) -> None:
         del self.timezones[tz_id]

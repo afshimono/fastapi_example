@@ -1,8 +1,9 @@
 import pwd
+from unicodedata import name
 import unittest
 
-from core.schemas.schema import UserCreate, UserUpdate
-from core.models.database import User
+from core.schemas.schema import TimezoneCreate, TimezoneUpdate, UserCreate, UserUpdate
+from core.models.database import User, Timezone
 from core.service import UserService, TimezoneService
 from db_mock import MockRepo
 from core.exceptions import NotFound, AuthError
@@ -36,6 +37,13 @@ class TestBaseService(unittest.TestCase):
         self.tz_name = "test"
         self.tz_city = "test city"
         self.tz_gmt_diff = -3
+        self.default_timezone = Timezone(
+            id=1,
+            owner_id=1,
+            name=self.tz_name,
+            city_name=self.tz_city,
+            gmt_hours_diff=self.tz_gmt_diff
+        )
 
     def _add_default_user(self):
         self.repo.users[1] = self.default_user
@@ -94,16 +102,46 @@ class TestService(TestBaseService):
         self.assertEqual(len(self.repo.users), 0)
 
     def test_get_tz_by_id(self):
-        pass
+        self._add_default_user()
+        self.repo.timezones[1] = self.default_timezone
+        tz = self.timezone_service.get_tz_by_id(1)
+        self.assertEqual(tz.id, 1)
 
     def test_list_tz_by_user_id(self):
-        pass
+        self._add_default_user()
+        self.repo.timezones[1] = self.default_timezone
+        tz_list = self.timezone_service.list_tz_by_user_id(1)
+        self.assertEqual(len(tz_list), 1)
 
     def test_create_tz(self):
-        pass
+        self._add_default_user()
+        tz_create = TimezoneCreate(
+            gmt_hours_diff=self.tz_gmt_diff,
+            name=self.tz_name,
+            city_name=self.tz_city,
+            owner_id=1
+        )
+        tz_created = self.timezone_service.create_tz(tz_create)
+        self.assertEqual(tz_create.name, tz_created.name)
+        self.assertEqual(tz_create.owner_id, tz_created.owner_id)
+        self.assertEqual(tz_create.city_name, tz_created.city_name)
+        self.assertEqual(tz_create.gmt_hours_diff, tz_created.gmt_hours_diff)
 
     def test_update_tz(self):
-        pass
+        self._add_default_user()
+        self.repo.timezones[1] = self.default_timezone
+        tz_update = TimezoneUpdate(
+            gmt_hours_diff=10,
+            name=self.tz_name,
+            city_name=self.tz_city,
+            owner_id=1,
+            id=1
+        )
+        self.timezone_service.update_tz(tz_update)
+        self.assertEqual(self.repo.timezones[1].gmt_hours_diff, 10)
 
     def test_delete_tz(self):
-        pass
+        self._add_default_user()
+        self.repo.timezones[1] = self.default_timezone
+        self.timezone_service.delete_tz(1)
+        self.assertEqual(len(self.repo.timezones), 0)

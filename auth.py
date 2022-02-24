@@ -85,3 +85,8 @@ def check_logged_is_admin(logged_user: Dict) -> None:
     if not logged_user["is_admin"]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authorized.")
+
+
+async def get_logged_credentials(request: Request) -> Dict:
+    bearer = JWTBearer()
+    return await bearer(request)

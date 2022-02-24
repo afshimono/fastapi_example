@@ -30,6 +30,7 @@ If you don't want to customize anything, the default value for `DATABASE_URL` mu
 When docker-compose runs, it will share its values with the application.
 
 Application is available in `localhost:8000`.
+Swagger docs can be found in `localhost:8000/docs`
 
 
 ### TODO List
