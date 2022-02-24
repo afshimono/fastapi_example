@@ -1,7 +1,7 @@
 from typing import Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from core.exceptions import DeleteError, NotFound, InsertError
+from core.exceptions import AuthError, DeleteError, NotFound, InsertError
 
 from core.schemas.schema import UserCreate, UserSignUp, UserUpdate
 from core.service import UserService
@@ -40,6 +40,9 @@ async def login(cred: UserSignUp, user_service: UserService = Depends(get_user_s
     except NotFound as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+    except AuthError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e)) from e
 
 
 @router.post("/signup")
